@@ -24,7 +24,7 @@
         <div class="card col-lg-12 px-0 mb-4">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table center-aligned-table">
+                    <table id="datatable" class="table center-aligned-table">
                         <thead>
                             <tr class="text-primary">
                                 <th>No</th>
@@ -185,6 +185,16 @@
     </div>
 
 @push('add_js')
+    <script>
+        $(document).ready(function () {
+            $('#datatable').DataTable( {
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        });
+    </script>
     <script>
         function validate(){
             var nama_barang = $("#namaBarang").val();
