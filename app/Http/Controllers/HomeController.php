@@ -136,7 +136,9 @@ class HomeController extends Controller
         $id = $request->id;
 
         $inventory = DB::table('inventory')
-        ->where('id', $id)
+        ->leftJoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
+        ->select('inventory.*','jenis_inventory.deskripsi')
+        ->where('inventory.id', $id)
         ->first();
 
         $jenis_inventory = DB::table('jenis_inventory')

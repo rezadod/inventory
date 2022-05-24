@@ -65,9 +65,9 @@
                 <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
                     <ul class="nav">
                         <li class="nav-item active">
-                            <a class="nav-link" href="{{ url('/dashboard') }}">
+                            <a class="nav-link" href="{{ url('/home') }}">
                                 <img src="images/icons/1.png" alt="">
-                                <span class="menu-title">Dashboard</span>
+                                <span class="menu-title">Kelola Inventory</span>
                             </a>
                         </li>
                     </ul>
@@ -106,7 +106,8 @@
     <script src="node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap"
         async defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/off-canvas.js"></script>
     <script src="js/hoverable-collapse.js"></script>
     <script src="js/misc.js"></script>
