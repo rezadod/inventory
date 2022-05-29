@@ -273,7 +273,32 @@
                     text: 'Keterangan Tidak Boleh Kosong!',
                 })
             }else{
-                $('#edit-btn-submit').click();
+                var token = '{{ csrf_token() }}';
+                var my_url = "{{url('/cek_produk')}}";
+                var formData = {
+                    '_token': token, 
+                    'nama_barang': nama_barang, 
+                    'harga_barang': harga_barang
+                };
+                $.ajax({
+                    method: 'POST',
+                    url: my_url,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(resp){
+                        $.each(resp, function(i,n){
+                            if(n['harga_barang'] != harga_barang){
+                                alert('Mohon maaf Data Produk Berbeda, Silahkan Input Data Baru!');
+                            }
+                            else{
+                                $('#edit-btn-submit').click();
+                            }
+                        });
+                    },
+                    error: function (resp){
+                        console.log(resp);
+                    }
+                });
             }
         }
 

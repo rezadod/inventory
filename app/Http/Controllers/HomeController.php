@@ -164,4 +164,17 @@ class HomeController extends Controller
 
         return view('widget.modal_detail', compact('inventory'));
     }
+
+    public function cek_produk(Request $request)
+    {
+        $nama_barang = $request->nama_barang;
+
+        $data_cek = DB::table('inventory')
+                    ->select('*')
+                    ->where('nama_barang', $nama_barang)
+                    ->get();
+
+        // dd($data_cek);
+        return response()->json($data_cek, 200);
+    }
 }
