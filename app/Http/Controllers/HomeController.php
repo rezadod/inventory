@@ -152,14 +152,19 @@ class HomeController extends Controller
     
     public function hapus_inventory(Request $request)
     {
+        // dd($request);
         $user_id = Auth::user()->id;
         $id = $request->id;
+        $keterangan = $request->keterangan;
 
         DB::table('inventory')
         ->where('id', $id)
         ->update([
+            'keterangan_barang' => $keterangan,
             'status_hapus' => '1'
         ]);
+
+        return redirect()->back()->with('hapus', 'Data Berhasil Dihapus!!');
     }
     
     public function edit_inventory(Request $request)
@@ -177,6 +182,22 @@ class HomeController extends Controller
         ->get();
 
         return view('widget.modal_edit', compact('inventory', 'jenis_inventory'));
+    }
+    public function hapus_data_inventory(Request $request)
+    {
+        $user_id = Auth::user()->id;
+        $id = $request->id;
+
+        $inventory = DB::table('inventory')
+        ->leftJoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
+        ->select('inventory.*','jenis_inventory.deskripsi')
+        ->where('inventory.id', $id)
+        ->first();
+
+        $jenis_inventory = DB::table('jenis_inventory')
+        ->get();
+
+        return view('widget.modal_hapus', compact('inventory', 'jenis_inventory'));
     }
     
     public function detail_inventory(Request $request)

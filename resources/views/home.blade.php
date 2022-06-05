@@ -19,6 +19,11 @@
                 {{ session('status') }}
             </div>
         @endif
+        @if (session('hapus'))
+            <div class="alert alert-danger">
+                {{ session('hapus') }}
+            </div>
+        @endif
     </div>
     <div class="card-deck">
         <div class="card col-lg-12 px-0 mb-4">
@@ -79,7 +84,7 @@
                                 @if(Auth::user()->role_id != '1')
                                 <th>Status Barang</th>
                                 @endif
-                                <th>Aksi</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,7 +96,7 @@
                                     $col = 4;
                                 }
                                 else {
-                                    $col = 5;
+                                    $col = 3;
                                 }
                             @endphp
                             @foreach($inventory as $inv)
@@ -109,12 +114,13 @@
                                     @if(Auth::user()->role_id != '1')
                                     <td><label class="badge <?php if($inv->status_hapus == 0){ echo 'badge-success'; }else{ echo 'badge-danger';} ?>">{{ $inv->is_hapus }}</label></td>
                                     @endif
-                                    <td>
-                                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="detail({{$inv->id}})" data-toggle="modal" data-target="#detailModal">Detail</a>
-                                    @if(Auth::user()->role_id == '1')
-                                        <a href="#" class="btn btn-outline-warning btn-sm" onclick="edit({{$inv->id}})" data-toggle="modal" data-target="#editModal">Edit</a>
-                                    
-                                        <a href="#" class="btn btn-outline-danger btn-sm" onclick="hapus({{$inv->id}})">Hapus</a>
+                                    <td class="text-center">
+                                        <a href="#" class="m-2 btn btn-outline-primary btn-sm" onclick="detail({{$inv->id}})" data-toggle="modal" data-target="#detailModal">Detail</a>
+                                        {{-- <br> --}}
+                                        @if(Auth::user()->role_id == '1')
+                                        <a href="#" class="m-2 btn btn-outline-warning btn-sm" onclick="edit({{$inv->id}})" data-toggle="modal" data-target="#editModal">Edit</a>
+                                        {{-- <br> --}}
+                                        <a href="#" class="m-2 btn btn-outline-danger btn-sm" onclick="hapus({{$inv->id}})" data-toggle="modal" data-target="#hapusModal">Hapus</a>
                                     </td>
                                     @endif
                                 </tr>
@@ -218,6 +224,27 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                     <button type="button" class="btn btn-success text-white" onclick="validate_edit()">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit -->
+    <div class="modal fade" id="hapusModal" tabindex="-1" role="dialog" aria-labelledby="hapusModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inputModalLabel">Hapus Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="bodyHapusModal">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger text-white" onclick="validate_hapus()">Hapus</button>
                 </div>
             </div>
         </div>
@@ -347,6 +374,7 @@
                 });
             }
         }
+
         function validate_edit(){
             var nama_barang = $("#edit_namaBarang").val();
             var jenis_barang = $("#edit_jenisBarang :selected").val();
@@ -382,36 +410,23 @@
                     text: 'Keterangan Tidak Boleh Kosong!',
                 })
             }else{
-                // var token = '{{ csrf_token() }}';
-                // var my_url = "{{url('/cek_produk')}}";
-                // var formData = {
-                //     '_token': token, 
-                //     'nama_barang': nama_barang, 
-                //     'harga_barang': harga_barang
-                // };
-                // $.ajax({
-                //     method: 'POST',
-                //     url: my_url,
-                //     data: formData,
-                //     dataType: 'json',
-                //     success: function(resp){
-                //         $.each(resp, function(i,n){
-                //             if(n['harga_barang'] != harga_barang){
-                //                 alert('Mohon maaf Data Produk Berbeda, Silahkan Input Data Baru!');
-                //             }
-                //             else{
-                                $('#edit-btn-submit').click();
-                //             }
-                //         });
-                //     },
-                //     error: function (resp){
-                //         console.log(resp);
-                //     }
-                // });
+                $('#edit-btn-submit').click();
+            }
+        }
+        function validate_hapus(){
+            var keterangan_barang = $("#keteranganBarang").val();
+
+            if(keterangan_barang == ''){
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Keterangan Tidak Boleh Kosong!',
+                })
+            }else{
+                $('#hapus-btn-submit').click();
             }
         }
 
-        function hapus(id){
+        function hapus2(id){
             console.log(id);
             const { value: text} = Swal.fire({
             input: 'textarea',
@@ -465,6 +480,28 @@
             // });
         }
 
+        function hapus(id){
+            var token = '{{ csrf_token() }}';
+            $.ajax({
+                method: "post",
+                url: "{{url('/hapus_data_inventory')}}",
+                data: {
+                    '_token': token,
+                    'id': id
+                },
+                success: function (resp) {
+                    // $('#hapusModal').modal('show');
+                    $("#bodyHapusModal").html(resp);
+                },
+                error: function (resp) {
+                    console.log(resp);
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Upss ada yang error, hubungi tim IT!',
+                    });
+                }
+            });
+        }
         function edit(id){
             var token = '{{ csrf_token() }}';
             $.ajax({
