@@ -24,7 +24,7 @@
 </div>
    <hr>
 <div class="row">
-   <div class="col-4">Keterangan Diedit</div>
+   <div class="col-4">Keterangan Diupdate</div>
    <div class="col-6">{{$inventory->keterangan_barang}}</div>
 </div>
    <hr>

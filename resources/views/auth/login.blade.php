@@ -44,13 +44,7 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                     @enderror
-                                </div>
-                                <div class="form-group d-flex align-items-center justify-content-between">
-                                    <div class="form-check"><label><input type="checkbox" class="form-check-input"
-                                                name="remember" id="remember"
-                                                {{ old('remember') ? 'checked' : '' }}>Remember me</label></div>
-                                    <!-- <a href="#" class="forgot-pass">Forgot password</a> -->
-                                </div>
+                                <br>
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary btn-block enter-btn">LOGIN</button>
                                 </div>
