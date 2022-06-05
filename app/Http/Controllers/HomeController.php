@@ -45,6 +45,37 @@ class HomeController extends Controller
                         
         return view('home', compact('jenis_inventory', 'inventory'));
     }
+    public function tampi_barang(Request $request)
+    {
+        // dd($request);
+        $tanggal_1 = $request->tanggal_1;
+        $tanggal_2 = $request->tanggal_2;
+        $role_id = Auth::user()->role_id;
+        $jenis_inventory = $request->jenis_inventory;
+
+        $inventory = DB::table('inventory')
+                        ->leftjoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
+                        ->leftjoin('status_hapus', 'inventory.status_hapus', 'status_hapus.id')
+                        ->select(
+                            'inventory.*',
+                            'status_hapus.deskripsi as is_hapus',
+                            'jenis_inventory.id as id_jenis_inventory',
+                            'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
+                        );
+                        if($role_id == 1){
+                            $inventory = $inventory->where('status_hapus', 0);
+                        }
+                        if(!empty($jenis_inventory)){
+                            $inventory = $inventory->where('inventory.jenis_inventory', $jenis_inventory);
+                        }
+                        if(!empty($tanggal_1)){
+                            $inventory = $inventory->whereDate('inventory.created_at', '>=', $tanggal_1);
+                            $inventory = $inventory->whereDate('inventory.created_at', '<=', $tanggal_2);
+                        }
+                        $inventory = $inventory->get();
+                        
+        return view('tampil_barang', compact('jenis_inventory', 'inventory'));
+    }
     
     public function save_input_barang(Request $request)
     {
@@ -112,6 +143,7 @@ class HomeController extends Controller
             'bukti_transaksi'=>$namaBuktiTfBaru,
             'harga_barang'=>$request->hargaBarang,
             'jenis_inventory'=>$request->jenisBarang,
+            'user_id' => $user_id,
             'keterangan_barang'=>$request->keteranganBarang
         ]);
 
@@ -154,8 +186,10 @@ class HomeController extends Controller
 
         $inventory = DB::table('inventory')
                         ->leftjoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
+                        ->leftJoin('users', 'inventory.user_id', 'users.id')
                         ->select(
                             'inventory.*',
+                            'users.name',
                             'jenis_inventory.id as id_jenis_inventory',
                             'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
                         )

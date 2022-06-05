@@ -24,8 +24,18 @@
 </div>
    <hr>
 <div class="row">
-   <div class="col-4">Keterangan Diupdate</div>
+   <div class="col-4">Keterangan @if($inventory->status_hapus == 0) Diedit @else Dihapus @endif</div>
    <div class="col-6">{{$inventory->keterangan_barang}}</div>
+</div>
+   <hr>
+<div class="row">
+   <div class="col-4">Admin @if($inventory->status_hapus == 0) Edit @else Hapus @endif</div>
+   <div class="col-6">{{$inventory->name}}</div>
+</div>
+   <hr>
+<div class="row">
+   <div class="col-4">Tanggal @if($inventory->status_hapus == 0) Diedit @else Dihapus @endif</div>
+   <div class="col-6">{{$inventory->updated_at}}</div>
 </div>
    <hr>
 <div class="row">

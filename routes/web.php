@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,8 +19,8 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/tampi_barang', [App\Http\Controllers\HomeController::class, 'tampi_barang'])->name('tampi_barang');
 Route::post('/save_input_barang', [App\Http\Controllers\HomeController::class, 'save_input_barang'])->name('save_input_barang');
 Route::post('/save_edit_barang', [App\Http\Controllers\HomeController::class, 'save_edit_barang'])->name('save_edit_barang');
 Route::post('/hapus_inventory', [App\Http\Controllers\HomeController::class, 'hapus_inventory'])->name('hapus_inventory');
