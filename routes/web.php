@@ -24,6 +24,7 @@ Route::post('/tampi_barang', [App\Http\Controllers\HomeController::class, 'tampi
 Route::post('/save_input_barang', [App\Http\Controllers\HomeController::class, 'save_input_barang'])->name('save_input_barang');
 Route::post('/save_edit_barang', [App\Http\Controllers\HomeController::class, 'save_edit_barang'])->name('save_edit_barang');
 Route::post('/hapus_inventory', [App\Http\Controllers\HomeController::class, 'hapus_inventory'])->name('hapus_inventory');
+Route::post('/hapus_data_inventory', [App\Http\Controllers\HomeController::class, 'hapus_data_inventory'])->name('hapus_data_inventory');
 Route::post('/edit_inventory', [App\Http\Controllers\HomeController::class, 'edit_inventory'])->name('edit_inventory');
 Route::post('/detail_inventory', [App\Http\Controllers\HomeController::class, 'detail_inventory'])->name('detail_inventory');
 Route::post('/cek_produk', [App\Http\Controllers\HomeController::class, 'cek_produk'])->name('cek_produk');
