@@ -55,6 +55,3 @@
    <input type="text" name="edit_buktiTransaksiLama" value="{{$inventory->bukti_transaksi}}" hidden>
    <input type="submit" value="" hidden id="edit-btn-submit">
 </form>
-<div class="text-center alert alert-warning fw-bold">
-   <b>Jika nama barang sama tetapi harga berbeda harap input data baru!</b>
-</div>
