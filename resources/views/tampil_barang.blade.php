@@ -11,18 +11,26 @@
             @if(Auth::user()->role_id != '1')
             <th>Status Barang</th>
             @endif
-            <th></th>
-            @if(Auth::user()->role_id == '1')
-            <th></th>
-            <th></th>
-            @endif
+            <th>Aksi</th>
         </tr>
     </thead>
     <tbody>
         @php
             $no=1;
+            $total_jml=0;
+            $total_harga_barang=0;
+            if(Auth::user()->role_id != 1){
+                $col = 4;
+            }
+            else {
+                $col = 5;
+            }
         @endphp
         @foreach($inventory as $inv)
+        @php
+            $total_jml += $inv->jumlah_barang;
+            $total_harga_barang += ($inv->jumlah_barang * $inv->harga_barang);
+        @endphp
             <tr class="">
                 <td>{{ $no++ }}</td>
                 <td>{{ $inv->nama_barang }}</td>
@@ -35,26 +43,33 @@
                 @endif
                 <td>
                     <a href="#" class="btn btn-outline-primary btn-sm" onclick="detail({{$inv->id}})" data-toggle="modal" data-target="#detailModal">Detail</a>
-                </td>
                 @if(Auth::user()->role_id == '1')
-                <td>
                     <a href="#" class="btn btn-outline-warning btn-sm" onclick="edit({{$inv->id}})" data-toggle="modal" data-target="#editModal">Edit</a>
-                </td>
-                <td>
+                
                     <a href="#" class="btn btn-outline-danger btn-sm" onclick="hapus({{$inv->id}})">Hapus</a>
                 </td>
                 @endif
             </tr>
         @endforeach
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="{{ $col }}"></td>
+            <td class="bg-info text-white">Jumlah Total Barang</td>
+            <td class="bg-info text-white">{{ number_format($total_jml) }}</td>
+            <td class="bg-info text-white">Jumlah Total Harga</td>
+            <td class="bg-info text-white">{{ number_format($total_harga_barang,0, ',','.') }}</td>
+        </tr>
+    </tfoot>
 </table>
 <script>
-    
     $(document).ready(function () {
             $('#datatable').DataTable( {
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    { extend: 'print', footer: true },
+                    { extend: 'pdf', footer: true },
+                    'copy', 'csv', 'excel'
                 ]
             });
         });
