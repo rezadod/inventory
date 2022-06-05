@@ -29,7 +29,7 @@
    <div class="form-group row">
          <label for="hargaBarang" class="col-sm-2 col-form-label">Harga Barang</label>
          <div class="col-sm-10">
-            <input value="{{$inventory->harga_barang}}" type="number" class="form-control" id="edit_hargaBarang" name="hargaBarang" placeholder="Masukkan Harga ">
+            <input disabled value="{{$inventory->harga_barang}}" type="number" class="form-control" id="edit_hargaBarang" name="hargaBarang" placeholder="Masukkan Harga ">
          </div>
    </div>
    <div class="form-group row">

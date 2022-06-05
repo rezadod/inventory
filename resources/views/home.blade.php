@@ -22,8 +22,51 @@
     </div>
     <div class="card-deck">
         <div class="card col-lg-12 px-0 mb-4">
+            <div class="text-center alert alert-warning fw-bold">
+                <b>Jika nama barang sama tetapi harga berbeda harap input data baru!</b>
+            </div>
             <div class="card-body">
-                <div class="table-responsive">
+                
+                <div class="row">
+                    <div class="col-3">
+                        <div>
+                            <label for="jenis_inventory">Jenis Inventory</label>
+                        </div>
+                        <div>
+                            <select name="jenis_inventory" id="jenis_inventory" class="form-control">
+                                <option value="">SEMUA</option>
+                                @foreach($jenis_inventory as $k)
+                                <option value="{{$k->id}}">{{$k->deskripsi}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div>
+                            <label for="tanggal_1">Tanggal Input 1</label>
+                        </div>
+                        <div>
+                            <input type="date" class="form-control" id="tanggal_1" name="tanggal_1">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div>
+                            <label for="tanggal_2">Tanggal Input 2</label>
+                        </div>
+                        <div>
+                            <input type="date" class="form-control" id="tanggal_2" name="tanggal_2">
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div>
+                            <span style="color: white">-</span>
+                        </div>
+                        <div>
+                            <a class="btn btn-info btn-md text-white mt-2 btn-rounded" onclick="cari_data(2)"><i class="fas fa-search"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive" id="tampil_search">
                     <table id="datatable" class="table center-aligned-table">
                         <thead>
                             <tr class="text-primary">
@@ -32,44 +75,60 @@
                                 <th>Jenis Inventory</th>
                                 <th>Jumlah Barang</th>
                                 <th>Harga Barang</th>
+                                <th>Tanggal Input</th>
                                 @if(Auth::user()->role_id != '1')
                                 <th>Status Barang</th>
                                 @endif
-                                <th></th>
-                                @if(Auth::user()->role_id == '1')
-                                <th></th>
-                                <th></th>
-                                @endif
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @php
                                 $no=1;
+                                $total_jml=0;
+                                $total_harga_barang=0;
+                                if(Auth::user()->role_id != 1){
+                                    $col = 4;
+                                }
+                                else {
+                                    $col = 5;
+                                }
                             @endphp
                             @foreach($inventory as $inv)
+                            @php
+                                $total_jml += $inv->jumlah_barang;
+                                $total_harga_barang += ($inv->jumlah_barang * $inv->harga_barang);
+                            @endphp
                                 <tr class="">
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $inv->nama_barang }}</td>
                                     <td>{{ $inv->deskripsi_jenis_inventory }}</td>
                                     <td>{{ $inv->jumlah_barang }}</td>
                                     <td>{{ $inv->harga_barang }}</td>
+                                    <td>{{ $inv->created_at }}</td>
                                     @if(Auth::user()->role_id != '1')
                                     <td><label class="badge <?php if($inv->status_hapus == 0){ echo 'badge-success'; }else{ echo 'badge-danger';} ?>">{{ $inv->is_hapus }}</label></td>
                                     @endif
                                     <td>
                                         <a href="#" class="btn btn-outline-primary btn-sm" onclick="detail({{$inv->id}})" data-toggle="modal" data-target="#detailModal">Detail</a>
-                                    </td>
                                     @if(Auth::user()->role_id == '1')
-                                    <td>
                                         <a href="#" class="btn btn-outline-warning btn-sm" onclick="edit({{$inv->id}})" data-toggle="modal" data-target="#editModal">Edit</a>
-                                    </td>
-                                    <td>
+                                    
                                         <a href="#" class="btn btn-outline-danger btn-sm" onclick="hapus({{$inv->id}})">Hapus</a>
                                     </td>
                                     @endif
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="{{ $col }}"></td>
+                                <td class="bg-info text-white">Jumlah Total Barang</td>
+                                <td class="bg-info text-white">{{ $total_jml }}</td>
+                                <td class="bg-info text-white">Jumlah Total Harga</td>
+                                <td class="bg-info text-white">{{ number_format($total_harga_barang,0, ',','.') }}</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -190,12 +249,37 @@
             $('#datatable').DataTable( {
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    { extend: 'print', footer: true },
+                    { extend: 'pdf', footer: true },
+                    'copy', 'csv', 'excel'
                 ]
             });
         });
-    </script>
-    <script>
+        
+        function cari_data(){
+            var tanggal_1 = $('#tanggal_1').val();
+            var tanggal_2 = $('#tanggal_2').val();
+            var jenis_inventory = $('#jenis_inventory').val();
+            var token = '{{ csrf_token() }}';
+            var my_url = "{{url('/tampi_barang')}}";
+            var formData = {
+                '_token': token,
+                'tanggal_1': tanggal_1,
+                'tanggal_2': tanggal_2,
+                'jenis_inventory': jenis_inventory
+            };
+            $.ajax({
+                method: 'POST',
+                url: my_url,
+                data: formData,
+                success: function(resp){
+                    $("#tampil_search").html(resp);
+                },
+                error: function (resp){
+                    console.log(resp);
+                }
+            });
+        }
         function validate(){
             var nama_barang = $("#namaBarang").val();
             var jenis_barang = $("#jenisBarang :selected").val();
@@ -235,7 +319,32 @@
                     text: 'Bukti Transfer Tidak Boleh Kosong!',
                 })
             }else{
-                $('#btn-submit').click();
+                var token = '{{ csrf_token() }}';
+                var my_url = "{{url('/cek_produk')}}";
+                var formData = {
+                    '_token': token, 
+                    'nama_barang': nama_barang, 
+                    'harga_barang': harga_barang
+                };
+                $.ajax({
+                    method: 'POST',
+                    url: my_url,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(resp){
+                        $.each(resp, function(i,n){
+                            if(n['nama_barang'] == nama_barang){
+                                alert('Mohon maaf Data Produk Sudah Ada, Silahkan Input Data Baru!');
+                            }
+                            else{
+                                $('#btn-submit').click();
+                            }
+                        });
+                    },
+                    error: function (resp){
+                        console.log(resp);
+                    }
+                });
             }
         }
         function validate_edit(){
@@ -273,32 +382,32 @@
                     text: 'Keterangan Tidak Boleh Kosong!',
                 })
             }else{
-                var token = '{{ csrf_token() }}';
-                var my_url = "{{url('/cek_produk')}}";
-                var formData = {
-                    '_token': token, 
-                    'nama_barang': nama_barang, 
-                    'harga_barang': harga_barang
-                };
-                $.ajax({
-                    method: 'POST',
-                    url: my_url,
-                    data: formData,
-                    dataType: 'json',
-                    success: function(resp){
-                        $.each(resp, function(i,n){
-                            if(n['harga_barang'] != harga_barang){
-                                alert('Mohon maaf Data Produk Berbeda, Silahkan Input Data Baru!');
-                            }
-                            else{
+                // var token = '{{ csrf_token() }}';
+                // var my_url = "{{url('/cek_produk')}}";
+                // var formData = {
+                //     '_token': token, 
+                //     'nama_barang': nama_barang, 
+                //     'harga_barang': harga_barang
+                // };
+                // $.ajax({
+                //     method: 'POST',
+                //     url: my_url,
+                //     data: formData,
+                //     dataType: 'json',
+                //     success: function(resp){
+                //         $.each(resp, function(i,n){
+                //             if(n['harga_barang'] != harga_barang){
+                //                 alert('Mohon maaf Data Produk Berbeda, Silahkan Input Data Baru!');
+                //             }
+                //             else{
                                 $('#edit-btn-submit').click();
-                            }
-                        });
-                    },
-                    error: function (resp){
-                        console.log(resp);
-                    }
-                });
+                //             }
+                //         });
+                //     },
+                //     error: function (resp){
+                //         console.log(resp);
+                //     }
+                // });
             }
         }
 
