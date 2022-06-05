@@ -273,48 +273,87 @@
                     text: 'Keterangan Tidak Boleh Kosong!',
                 })
             }else{
-                $('#edit-btn-submit').click();
+                var token = '{{ csrf_token() }}';
+                var my_url = "{{url('/cek_produk')}}";
+                var formData = {
+                    '_token': token, 
+                    'nama_barang': nama_barang, 
+                    'harga_barang': harga_barang
+                };
+                $.ajax({
+                    method: 'POST',
+                    url: my_url,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(resp){
+                        $.each(resp, function(i,n){
+                            if(n['harga_barang'] != harga_barang){
+                                alert('Mohon maaf Data Produk Berbeda, Silahkan Input Data Baru!');
+                            }
+                            else{
+                                $('#edit-btn-submit').click();
+                            }
+                        });
+                    },
+                    error: function (resp){
+                        console.log(resp);
+                    }
+                });
             }
         }
 
         function hapus(id){
-            Swal.fire({
-                    title: 'Anda Yakin?',
-                    text: "Data inventory yang dihapus tidak dapat dikembalikan kembali!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Batal',
-                    confirmButtonText: 'Ya, Hapus!'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    var token = '{{ csrf_token() }}';
-                    $.ajax({
-                        method: "post",
-                        url: "{{url('/hapus_inventory')}}",
-                        data: {
-                            '_token': token,
-                            'id': id
-                        },
-                        success: function (resp) {
-                            Swal.fire({
-                                icon: 'success',
-                                text: 'Data berhasil dihapus!',
-                            });
-                            location.reload();
-                        },
-                        error: function (resp) {
-                            console.log(resp);
-                            Swal.fire({
-                                icon: 'error',
-                                text: 'Data gagal dihapus!',
-                            });
-                            location.reload();
-                        }
-                    });
-                }
-            });
+            console.log(id);
+            const { value: text} = Swal.fire({
+            input: 'textarea',
+            inputLabel: 'Message',
+            inputPlaceholder: 'Type your message here...',
+            inputAttributes: {
+                'aria-label': 'Type your message here'
+            },
+            showCancelButton: true
+            })
+
+            if (text) {
+            Swal.fire(text)
+            }
+            // Swal.fire({
+            //         title: 'Anda Yakin?',
+            //         text: "Data inventory yang dihapus tidak dapat dikembalikan kembali!",
+            //         icon: 'warning',
+            //         showCancelButton: true,
+            //         confirmButtonColor: '#3085d6',
+            //         cancelButtonColor: '#d33',
+            //         cancelButtonText: 'Batal',
+            //         confirmButtonText: 'Ya, Hapus!'
+            //     }).then((result) => {
+            //     if (result.isConfirmed) {
+            //         var token = '{{ csrf_token() }}';
+            //         $.ajax({
+            //             method: "post",
+            //             url: "{{url('/hapus_inventory')}}",
+            //             data: {
+            //                 '_token': token,
+            //                 'id': id
+            //             },
+            //             success: function (resp) {
+            //                 Swal.fire({
+            //                     icon: 'success',
+            //                     text: 'Data berhasil dihapus!',
+            //                 });
+            //                 location.reload();
+            //             },
+            //             error: function (resp) {
+            //                 console.log(resp);
+            //                 Swal.fire({
+            //                     icon: 'error',
+            //                     text: 'Data gagal dihapus!',
+            //                 });
+            //                 location.reload();
+            //             }
+            //         });
+            //     }
+            // });
         }
 
         function edit(id){

@@ -136,7 +136,9 @@ class HomeController extends Controller
         $id = $request->id;
 
         $inventory = DB::table('inventory')
-        ->where('id', $id)
+        ->leftJoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
+        ->select('inventory.*','jenis_inventory.deskripsi')
+        ->where('inventory.id', $id)
         ->first();
 
         $jenis_inventory = DB::table('jenis_inventory')
@@ -161,5 +163,18 @@ class HomeController extends Controller
                         ->first();
 
         return view('widget.modal_detail', compact('inventory'));
+    }
+
+    public function cek_produk(Request $request)
+    {
+        $nama_barang = $request->nama_barang;
+
+        $data_cek = DB::table('inventory')
+                    ->select('*')
+                    ->where('nama_barang', $nama_barang)
+                    ->get();
+
+        // dd($data_cek);
+        return response()->json($data_cek, 200);
     }
 }
