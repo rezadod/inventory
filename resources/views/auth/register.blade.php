@@ -61,10 +61,7 @@
                                         name="password_confirmation" required autocomplete="new-password"
                                         placeholder="Repeat Password">
                                 </div>
-                                <div class="form-group d-flex align-items-center justify-content-between">
-                                    <div class="form-check"><label><input type="checkbox" class="form-check-input">I
-                                            Agree to the Terms & conditions</label></div>
-                                </div>
+                                <br>
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary btn-block enter-btn">SIGN UP</button>
                                 </div>

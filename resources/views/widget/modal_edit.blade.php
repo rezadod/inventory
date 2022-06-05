@@ -4,14 +4,13 @@
    <div class="form-group row">
          <label for="namaBarang" class="col-sm-2 col-form-label">Nama Barang</label>
          <div class="col-sm-10">
-            <input disabled value="{{$inventory->nama_barang}}" type="text" class="form-control" id="edit_namaBarang" name="namaBarang" placeholder="Masukkan Nama Barang">
+            <input value="{{$inventory->nama_barang}}" type="text" class="form-control" id="edit_namaBarang" name="namaBarang" placeholder="Masukkan Nama Barang" disabled >
          </div>
    </div>
    <div class="form-group row">
          <label for="jenisBarang" class="col-sm-2 col-form-label">Jenis Barang</label>
          <div class="col-sm-10">
-            <input disabled value="{{$inventory->deskripsi}}" type="text" class="form-control" id="edit_jenisBarang" name="jenisBarang" placeholder="Masukkan Nama Barang">
-            {{-- <select class="form-control" id="edit_jenisBarang" name="jenisBarang">
+            <select class="form-control" id="edit_jenisBarang" name="jenisBarang" disabled >
                <option value="">-- Pilih Jenis Barang --</option>
                @foreach($jenis_inventory as $data)
                <option <?php if($data->id == $inventory->jenis_inventory){ echo 'selected'; } ?> value="{{$data->id}}">{{$data->deskripsi}}</option>
@@ -23,13 +22,14 @@
          <label for="jumlahBarang" class="col-sm-2 col-form-label">Jumlah Barang</label>
          <div class="col-sm-10">
             <input value="{{$inventory->jumlah_barang}}" type="number" class="form-control" id="edit_jumlahBarang" name="jumlahBarang"
-               placeholder="Masukkan Jumlah Barang">
+               placeholder="Masukkan Jumlah Barang" >
          </div>
    </div>
    <div class="form-group row">
          <label for="hargaBarang" class="col-sm-2 col-form-label">Harga Barang</label>
          <div class="col-sm-10">
             <input disabled value="{{$inventory->harga_barang}}" type="number" class="form-control" id="edit_hargaBarang" name="hargaBarang" placeholder="Masukkan Harga ">
+
          </div>
    </div>
    <div class="form-group row">
@@ -41,13 +41,13 @@
    <div class="form-group row" hidden>
          <label for="fotoBarang" class="col-sm-2 col-form-label">Foto Barang</label>
          <div class="col-sm-10">
-            <input type="file" class="form-control" id="edit_fotoBarang" name="fotoBarang"> <span>{{$inventory->foto_barang}}</span>
+            <input type="file" class="form-control" id="edit_fotoBarang" name="fotoBarang" disabled > <span>{{$inventory->foto_barang}}</span>
          </div>
    </div>
    <div class="form-group row" hidden>
          <label for="buktiTransaksi" class="col-sm-2 col-form-label">Bukti Transaksi</label>
          <div class="col-sm-10">
-            <input type="file" class="form-control" id="edit_buktiTransaksi" name="buktiTransaksi"> <span>{{$inventory->bukti_transaksi}}</span>
+            <input type="file" class="form-control" id="edit_buktiTransaksi" name="buktiTransaksi" disabled > <span>{{$inventory->bukti_transaksi}}</span>
          </div>
    </div>
    <input type="text" name="id" value="{{$inventory->id}}" hidden>
