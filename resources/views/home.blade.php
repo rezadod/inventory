@@ -124,7 +124,7 @@
                             <tr>
                                 <td colspan="{{ $col }}"></td>
                                 <td class="bg-info text-white">Jumlah Total Barang</td>
-                                <td class="bg-info text-white">{{ $total_jml }}</td>
+                                <td class="bg-info text-white">{{ number_format($total_jml) }}</td>
                                 <td class="bg-info text-white">Jumlah Total Harga</td>
                                 <td class="bg-info text-white">{{ number_format($total_harga_barang,0, ',','.') }}</td>
                             </tr>
