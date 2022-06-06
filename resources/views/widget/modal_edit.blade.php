@@ -15,7 +15,7 @@
                @foreach($jenis_inventory as $data)
                <option <?php if($data->id == $inventory->jenis_inventory){ echo 'selected'; } ?> value="{{$data->id}}">{{$data->deskripsi}}</option>
                @endforeach
-            </select> --}}
+            </select>
          </div>
    </div>
    <div class="form-group row">
