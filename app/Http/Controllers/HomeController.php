@@ -110,6 +110,7 @@ class HomeController extends Controller
     
     public function save_edit_barang(Request $request)
     {
+        // dd($request);
         $user_id = Auth::user()->id;
         $foto_barang = $request->file('fotoBarang');
         $bukti_tf = $request->file('buktiTransaksi');
