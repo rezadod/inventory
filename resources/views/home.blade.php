@@ -200,8 +200,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-success text-white" onclick="validate()">Simpan</button>
-                        <input type="submit" value="" hidden id="btn-submit">
+                        <button type="button" class="btn btn-success text-white" onclick="validate_input()">Simpan</button>
+                        <button type="submit" id="tombol_input" hidden></button>
                     </div>
                 </form>
             </div>
@@ -307,7 +307,7 @@
                 }
             });
         }
-        function validate(){
+        function validate_input(){
             var nama_barang = $("#namaBarang").val();
             var jenis_barang = $("#jenisBarang :selected").val();
             var jumlah_barang = $("#jumlahBarang").val();
@@ -346,6 +346,7 @@
                     text: 'Bukti Transfer Tidak Boleh Kosong!',
                 })
             }else{
+                var cek_nama_barang= 0;
                 var token = '{{ csrf_token() }}';
                 var my_url = "{{url('/cek_produk')}}";
                 var formData = {
@@ -360,13 +361,15 @@
                     dataType: 'json',
                     success: function(resp){
                         $.each(resp, function(i,n){
-                            if(n['nama_barang'] == nama_barang){
-                                alert('Mohon maaf Data Produk Sudah Ada, Silahkan Input Data Baru!');
-                            }
-                            else{
-                                $('#btn-submit').click();
-                            }
+                            cek_nama_barang = n['nama_barang'];
                         });
+                        console.log(resp, cek_nama_barang);
+                        if(cek_nama_barang == nama_barang || cek_nama_barang === nama_barang){
+                            alert('Mohon maaf Data Produk Sudah Ada, Silahkan Input Data Baru!');
+                        }
+                        else{
+                            $('#tombol_input').click();
+                        }
                     },
                     error: function (resp){
                         console.log(resp);
