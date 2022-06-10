@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Prophecy\Call\Call;
 
 class HomeController extends Controller
 {
@@ -31,20 +32,21 @@ class HomeController extends Controller
 
         $inventory = DB::table('inventory')
                         ->leftjoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
-                        ->leftjoin('status_hapus', 'inventory.status_hapus', 'status_hapus.id')
+                        ->leftjoin('status_barang', 'inventory.status_barang', 'status_barang.id')
                         ->select(
                             'inventory.*',
-                            'status_hapus.deskripsi as is_hapus',
+                            'status_barang.deskripsi as is_hapus',
                             'jenis_inventory.id as id_jenis_inventory',
                             'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
                         );
                     if($role_id == 1){
-                        $inventory = $inventory->where('status_hapus', 0);
+                        $inventory = $inventory->where('status_barang', 0);
                     }
                         $inventory = $inventory->get();
                         
         return view('home', compact('jenis_inventory', 'inventory'));
     }
+
     public function tampi_barang(Request $request)
     {
         // dd($request);
@@ -55,22 +57,22 @@ class HomeController extends Controller
 
         $inventory = DB::table('inventory')
                         ->leftjoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
-                        ->leftjoin('status_hapus', 'inventory.status_hapus', 'status_hapus.id')
+                        ->leftjoin('status_barang', 'inventory.status_barang', 'status_barang.id')
                         ->select(
                             'inventory.*',
-                            'status_hapus.deskripsi as is_hapus',
+                            'status_barang.deskripsi as is_hapus',
                             'jenis_inventory.id as id_jenis_inventory',
                             'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
                         );
                         if($role_id == 1){
-                            $inventory = $inventory->where('status_hapus', 0);
+                            $inventory = $inventory->where('status_barang', 0);
                         }
                         if(!empty($jenis_inventory)){
                             $inventory = $inventory->where('inventory.jenis_inventory', $jenis_inventory);
                         }
                         if(!empty($tanggal_1)){
-                            $inventory = $inventory->whereDate('inventory.created_at', '>=', $tanggal_1);
-                            $inventory = $inventory->whereDate('inventory.created_at', '<=', $tanggal_2);
+                            $inventory = $inventory->whereDate('inventory.tanggal_barang_ditambahkan', '>=', $tanggal_1);
+                            $inventory = $inventory->whereDate('inventory.tanggal_barang_ditambahkan', '<=', $tanggal_2);
                         }
                         $inventory = $inventory->get();
                         
@@ -79,6 +81,7 @@ class HomeController extends Controller
     
     public function save_input_barang(Request $request)
     {
+        $date_now = Carbon::now('Asia/jakarta')->format('Y-m-d H:i:s');
         $user_id = Auth::user()->id;
         $foto_barang = $request->file('fotoBarang');
         $bukti_tf = $request->file('buktiTransaksi');
@@ -97,7 +100,8 @@ class HomeController extends Controller
 
         DB::table('inventory')->insert([
             'nama_barang'=>$request->namaBarang,
-            'jumlah_barang'=>$request->jumlahBarang,
+            'jumlah_barang_masuk'=>$request->jumlahBarang,
+            'tanggal_barang_ditambahkan'=>$date_now,
             'foto_barang'=>$namaFotoBarangBaru,
             'bukti_transaksi'=>$namaBuktiTfBaru,
             'harga_barang'=>$request->hargaBarang,
@@ -232,5 +236,59 @@ class HomeController extends Controller
 
         // dd($data_cek);
         return response()->json($data_cek, 200);
+    }
+
+    // BARANG KELUAR
+    public function report_barang_keluar()
+    {
+        $role_id = Auth::user()->role_id;
+        $jenis_inventory = DB::table('jenis_inventory')
+                        ->get();
+
+        $status_barang = DB::table('status_barang')
+                        ->where('id', '!=', 0)
+                        ->get();
+        $daftar_barang = DB::table('inventory')
+                        // ->where('status_barang', '!=', 0)
+                        ->get();
+        $inventory = DB::table('inventory')
+                        ->leftjoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
+                        ->leftjoin('status_barang', 'inventory.status_barang', 'status_barang.id')
+                        ->select(
+                            'inventory.*',
+                            'status_barang.deskripsi as is_hapus',
+                            'jenis_inventory.id as id_jenis_inventory',
+                            'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
+                        );
+                        $inventory = $inventory->where('inventory.jumlah_barang_keluar', '!=', 0);
+                        $inventory = $inventory->get();
+                        
+        return view('report_barang_keluar', compact('jenis_inventory', 'inventory', 'status_barang', 'daftar_barang'));
+    }
+
+    public function save_input_barang_keluar(Request $request)
+    {
+        $date_now = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
+        $id_barang = $request->nama_barang;
+        $jumlah_barang_keluar = $request->jumlah_barang_keluar;
+
+        $cek_exist = DB::table('inventory')
+                    ->select('jumlah_barang_keluar')
+                    ->where('id', $id_barang)
+                    ->first();
+        if($cek_exist->jumlah_barang_keluar < 1){
+            $update = [
+                'jumlah_barang_keluar' => $jumlah_barang_keluar,
+                'tanggal_barang_keluar' => $date_now
+            ];
+        } 
+        else {
+            $update = [
+                'jumlah_barang_keluar' => $cek_exist->jumlah_barang_keluar+$jumlah_barang_keluar,
+                'tanggal_barang_keluar' => $date_now
+            ];
+        }
+        DB::table('inventory')->where('id', $id_barang)->update($update);
+        return redirect()->back()->with('status', 'Barang Berhasil Ditambahkan');
     }
 }

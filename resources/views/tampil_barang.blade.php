@@ -5,7 +5,7 @@
             <th>No</th>
             <th>Nama Barang</th>
             <th>Jenis Inventory</th>
-            <th>Jumlah Barang</th>
+            <th>Jumlah Barang Masuk</th>
             <th>Harga Barang</th>
             <th>Tanggal Input</th>
             @if(Auth::user()->role_id != '1')
@@ -28,16 +28,16 @@
         @endphp
         @foreach($inventory as $inv)
         @php
-            $total_jml += $inv->jumlah_barang;
-            $total_harga_barang += ($inv->jumlah_barang * $inv->harga_barang);
+            $total_jml += $inv->jumlah_barang_masuk;
+            $total_harga_barang += ($inv->jumlah_barang_masuk * $inv->harga_barang);
         @endphp
             <tr class="">
                 <td>{{ $no++ }}</td>
                 <td>{{ $inv->nama_barang }}</td>
                 <td>{{ $inv->deskripsi_jenis_inventory }}</td>
-                <td>{{ $inv->jumlah_barang }}</td>
+                <td>{{ $inv->jumlah_barang_masuk }}</td>
                 <td>{{ $inv->harga_barang }}</td>
-                <td>{{ $inv->created_at }}</td>
+                <td>{{ $inv->tanggal_barang_ditambahkan }}</td>
                 @if(Auth::user()->role_id != '1')
                 <td><label class="badge <?php if($inv->status_hapus == 0){ echo 'badge-success'; }else{ echo 'badge-danger';} ?>">{{ $inv->is_hapus }}</label></td>
                 @endif
