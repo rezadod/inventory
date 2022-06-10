@@ -71,6 +71,12 @@
                                 <span class="menu-title">Kelola Inventory</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/report_barang_keluar') }}">
+                                <img src="images/icons/1.png" alt="">
+                                <span class="menu-title">Report Barang keluar</span>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
 

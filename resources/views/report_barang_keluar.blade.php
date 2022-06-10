@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-heading mb-4">Report Barang Masuk</h3>
+    <h3 class="page-heading mb-4">Report Barang Keluar</h3>
     @if(Auth::user()->role_id == '1')
     <div class="row">
-        <a href="#" class="btn btn-success btn-sm p-2 mb-4 ml-3 text-white" data-toggle="modal"
-            data-target="#inputModal">Input Barang</a>
+        <a href="#" class="btn btn-danger btn-sm p-2 mb-4 ml-3 text-white" data-toggle="modal"
+            data-target="#inputModal">Barang Keluar</a>
     </div>
     @endif
     <div class="row ml-1">
@@ -27,13 +27,10 @@
     </div>
     <div class="card-deck">
         <div class="card col-lg-12 px-0 mb-4">
-            <div class="text-center alert alert-warning fw-bold">
-                <b>Jika nama barang sama tetapi harga berbeda harap input data baru!</b>
-            </div>
             <div class="card-body">
                 
                 <div class="row">
-                    <div class="col-3">
+                    <div class="col-2">
                         <div>
                             <label for="jenis_inventory">Jenis Inventory</label>
                         </div>
@@ -46,9 +43,22 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-2">
+                        <div>
+                            <label for="status_barang">Status Barang</label>
+                        </div>
+                        <div>
+                            <select name="status_barang" id="status_barang" class="form-control">
+                                <option value="">SEMUA</option>
+                                @foreach($status_barang as $k)
+                                <option value="{{$k->id}}">{{$k->deskripsi}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-3">
                         <div>
-                            <label for="tanggal_1">Tanggal Input 1</label>
+                            <label for="tanggal_1">Tanggal Keluar 1</label>
                         </div>
                         <div>
                             <input type="date" class="form-control" id="tanggal_1" name="tanggal_1">
@@ -56,7 +66,7 @@
                     </div>
                     <div class="col-3">
                         <div>
-                            <label for="tanggal_2">Tanggal Input 2</label>
+                            <label for="tanggal_2">Tanggal Keluar 2</label>
                         </div>
                         <div>
                             <input type="date" class="form-control" id="tanggal_2" name="tanggal_2">
@@ -67,7 +77,7 @@
                             <span style="color: white">-</span>
                         </div>
                         <div>
-                            <a class="btn btn-info btn-md text-white mt-2 btn-rounded" onclick="cari_data(2)"><i class="fas fa-search"></i></a>
+                            <a class="btn btn-warning btn-md text-white mt-2 btn-rounded" onclick="cari_data(2)"><i class="fas fa-search"></i></a>
                         </div>
                     </div>
                 </div>
@@ -80,11 +90,7 @@
                                 <th>Jenis Inventory</th>
                                 <th>Jumlah Barang</th>
                                 <th>Harga Barang</th>
-                                <th>Tanggal Input</th>
-                                @if(Auth::user()->role_id != '1')
-                                <th>Status Barang</th>
-                                @endif
-                                <th class="text-center">Aksi</th>
+                                <th>Tanggal Keluar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -93,46 +99,34 @@
                                 $total_jml=0;
                                 $total_harga_barang=0;
                                 if(Auth::user()->role_id != 1){
-                                    $col = 4;
+                                    $col = 2;
                                 }
                                 else {
-                                    $col = 3;
+                                    $col = 2;
                                 }
                             @endphp
                             @foreach($inventory as $inv)
                             @php
-                                $total_jml += $inv->jumlah_barang_masuk;
-                                $total_harga_barang += ($inv->jumlah_barang_masuk * $inv->harga_barang);
+                                $total_jml += $inv->jumlah_barang_keluar;
+                                $total_harga_barang += ($inv->jumlah_barang_keluar * $inv->harga_barang);
                             @endphp
                                 <tr class="">
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $inv->nama_barang }}</td>
                                     <td>{{ $inv->deskripsi_jenis_inventory }}</td>
-                                    <td>{{ $inv->jumlah_barang_masuk }}</td>
+                                    <td>{{ $inv->jumlah_barang_keluar }}</td>
                                     <td>{{ $inv->harga_barang }}</td>
-                                    <td>{{ $inv->tanggal_barang_ditambahkan }}</td>
-                                    @if(Auth::user()->role_id != '1')
-                                    <td><label class="badge <?php if($inv->status_hapus == 0){ echo 'badge-success'; }else{ echo 'badge-danger';} ?>">{{ $inv->is_hapus }}</label></td>
-                                    @endif
-                                    <td class="text-center">
-                                        <a href="#" class="m-2 btn btn-outline-primary btn-sm" onclick="detail({{$inv->id}})" data-toggle="modal" data-target="#detailModal">Detail</a>
-                                        {{-- <br> --}}
-                                        @if(Auth::user()->role_id == '1')
-                                        <a href="#" class="m-2 btn btn-outline-warning btn-sm" onclick="edit({{$inv->id}})" data-toggle="modal" data-target="#editModal">Edit</a>
-                                        {{-- <br> --}}
-                                        <a href="#" class="m-2 btn btn-outline-danger btn-sm" onclick="hapus({{$inv->id}})" data-toggle="modal" data-target="#hapusModal">Hapus</a>
-                                    </td>
-                                    @endif
+                                    <td>{{ $inv->tanggal_barang_keluar }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="{{ $col }}"></td>
-                                <td class="bg-info text-white">Jumlah Total Barang</td>
-                                <td class="bg-info text-white">{{ number_format($total_jml) }}</td>
-                                <td class="bg-info text-white">Jumlah Total Harga</td>
-                                <td class="bg-info text-white">{{ number_format($total_harga_barang,0, ',','.') }}</td>
+                                <td class="bg-warning text-white">Jumlah Total Barang</td>
+                                <td class="bg-warning text-white">{{ number_format($total_jml) }}</td>
+                                <td class="bg-warning text-white">Jumlah Total Harga</td>
+                                <td class="bg-warning text-white">{{ number_format($total_harga_barang,0, ',','.') }}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -146,58 +140,33 @@
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form action="{{url('save_input_barang')}}" method="post" enctype='multipart/form-data'>
+                <form action="{{url('save_input_barang_keluar')}}" method="post" enctype='multipart/form-data'>
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="inputModalLabel">Input Barang</h5>
+                        <h5 class="modal-title" id="inputModalLabel">Input Barang Keluar</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group row">
-                            <label for="namaBarang" class="col-sm-2 col-form-label">Nama Barang</label>
+                            <label for="nama_barang" class="col-sm-2 col-form-label">Nama Barang</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="namaBarang" name="namaBarang" placeholder="Masukkan Nama Barang">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="jenisBarang" class="col-sm-2 col-form-label">Jenis Barang</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" id="jenisBarang" name="jenisBarang">
-                                    <option value="">-- Pilih Jenis Barang --</option>
-                                    @foreach($jenis_inventory as $data)
-                                    <option value="{{$data->id}}">{{$data->deskripsi}}</option>
+                                <select class="form-control" id="nama_barang" name="nama_barang">
+                                    <option value="">-- Pilih Nama Barang --</option>
+                                    @foreach($daftar_barang as $data)
+                                    <option value="{{$data->id}}">{{$data->nama_barang}}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="jumlahBarang" class="col-sm-2 col-form-label">Jumlah Barang</label>
+                            <label for="jumlah_barang_keluar" class="col-sm-2 col-form-label">Jumlah Barang Keluar</label>
                             <div class="col-sm-10">
-                                <input type="number" class="form-control" id="jumlahBarang" name="jumlahBarang"
+                                <input type="number" class="form-control" id="jumlah_barang_keluar" name="jumlah_barang_keluar"
                                     placeholder="Masukkan Jumlah Barang">
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label for="hargaBarang" class="col-sm-2 col-form-label">Harga Barang</label>
-                            <div class="col-sm-10">
-                                <input type="number" class="form-control" id="hargaBarang" name="hargaBarang" placeholder="Masukkan Harga ">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="fotoBarang" class="col-sm-2 col-form-label">Foto Barang</label>
-                            <div class="col-sm-10">
-                                <input type="file" class="form-control" id="fotoBarang" name="fotoBarang">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="buktiTransaksi" class="col-sm-2 col-form-label">Bukti Transaksi</label>
-                            <div class="col-sm-10">
-                                <input type="file" class="form-control" id="buktiTransaksi" name="buktiTransaksi">
-                            </div>
-                        </div>
-                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                         <button type="button" class="btn btn-success text-white" onclick="validate_input()">Simpan</button>
@@ -286,13 +255,15 @@
         function cari_data(){
             var tanggal_1 = $('#tanggal_1').val();
             var tanggal_2 = $('#tanggal_2').val();
+            var status_barang = $('#status_barang').val();
             var jenis_inventory = $('#jenis_inventory').val();
             var token = '{{ csrf_token() }}';
-            var my_url = "{{url('/tampi_barang')}}";
+            var my_url = "{{url('/report_barang_keluar')}}";
             var formData = {
                 '_token': token,
                 'tanggal_1': tanggal_1,
                 'tanggal_2': tanggal_2,
+                'status_barang': status_barang,
                 'jenis_inventory': jenis_inventory
             };
             $.ajax({
@@ -308,73 +279,22 @@
             });
         }
         function validate_input(){
-            var nama_barang = $("#namaBarang").val();
-            var jenis_barang = $("#jenisBarang :selected").val();
-            var jumlah_barang = $("#jumlahBarang").val();
-            var harga_barang = $("#hargaBarang").val();
-            var foto_barang = $("#fotoBarang").val();
-            var bukti_tf = $("#buktiTransaksi").val();
+            var nama_barang = $("#nama_barang").val();
+            var jumlah_barang = $("#jumlah__barang_keluar").val();
+            var ket_barang = $("#ket_barang").val();
 
             if(nama_barang == ''){
                 Swal.fire({
                     icon: 'error',
                     text: 'Nama Barang Tidak Boleh Kosong!',
                 })
-            }else if(jenis_barang == ''){
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Jenis Barang Tidak Boleh Kosong!',
-                })
             }else if(jumlah_barang == ''){
                 Swal.fire({
                     icon: 'error',
                     text: 'Jumlah Barang Tidak Boleh Kosong!',
                 })
-            }else if(harga_barang == ''){
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Harga Barang Tidak Boleh Kosong!',
-                })
-            }else if(foto_barang == ''){
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Foto Barang Tidak Boleh Kosong!',
-                })
-            }else if(bukti_tf == ''){
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Bukti Transfer Tidak Boleh Kosong!',
-                })
             }else{
-                var cek_nama_barang= 0;
-                var token = '{{ csrf_token() }}';
-                var my_url = "{{url('/cek_produk')}}";
-                var formData = {
-                    '_token': token, 
-                    'nama_barang': nama_barang, 
-                    'harga_barang': harga_barang
-                };
-                $.ajax({
-                    method: 'POST',
-                    url: my_url,
-                    data: formData,
-                    dataType: 'json',
-                    success: function(resp){
-                        $.each(resp, function(i,n){
-                            cek_nama_barang = n['nama_barang'];
-                        });
-                        console.log(resp, cek_nama_barang);
-                        if(cek_nama_barang == nama_barang || cek_nama_barang === nama_barang){
-                            alert('Mohon maaf Data Produk Sudah Ada, Silahkan Input Data Baru!');
-                        }
-                        else{
-                            $('#tombol_input').click();
-                        }
-                    },
-                    error: function (resp){
-                        console.log(resp);
-                    }
-                });
+                $('#tombol_input').click();
             }
         }
 
