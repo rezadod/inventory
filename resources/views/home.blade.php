@@ -78,7 +78,9 @@
                                 <th>No</th>
                                 <th>Nama Barang</th>
                                 <th>Jenis Inventory</th>
-                                <th>Jumlah Barang</th>
+                                <th>Jumlah Barang Masuk</th>
+                                <th>Jumlah Barang Keluar</th>
+                                <th>Sisa Barang</th>
                                 <th>Harga Barang</th>
                                 <th>Tanggal Input</th>
                                 @if(Auth::user()->role_id != '1')
@@ -93,22 +95,24 @@
                                 $total_jml=0;
                                 $total_harga_barang=0;
                                 if(Auth::user()->role_id != 1){
-                                    $col = 4;
+                                    $col = 6;
                                 }
                                 else {
-                                    $col = 3;
+                                    $col = 5;
                                 }
                             @endphp
                             @foreach($inventory as $inv)
                             @php
-                                $total_jml += $inv->jumlah_barang_masuk;
-                                $total_harga_barang += ($inv->jumlah_barang_masuk * $inv->harga_barang);
+                                $total_jml += $inv->jumlah_barang_masuk - $inv->jumlah_barang_keluar;
+                                $total_harga_barang += (($inv->jumlah_barang_masuk - $inv->jumlah_barang_keluar) * $inv->harga_barang);
                             @endphp
                                 <tr class="">
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $inv->nama_barang }}</td>
                                     <td>{{ $inv->deskripsi_jenis_inventory }}</td>
                                     <td>{{ $inv->jumlah_barang_masuk }}</td>
+                                    <td>{{ $inv->jumlah_barang_keluar }}</td>
+                                    <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td>
                                     <td>{{ $inv->harga_barang }}</td>
                                     <td>{{ $inv->tanggal_barang_ditambahkan }}</td>
                                     @if(Auth::user()->role_id != '1')
@@ -118,7 +122,7 @@
                                         <a href="#" class="m-2 btn btn-outline-primary btn-sm" onclick="detail({{$inv->id}})" data-toggle="modal" data-target="#detailModal">Detail</a>
                                         {{-- <br> --}}
                                         @if(Auth::user()->role_id == '1')
-                                        <a href="#" class="m-2 btn btn-outline-warning btn-sm" onclick="edit({{$inv->id}})" data-toggle="modal" data-target="#editModal">Edit</a>
+                                        <a href="#" class="m-2 btn btn-outline-warning btn-sm" onclick="edit({{$inv->id}})" data-toggle="modal" data-target="#editModal" hidden>Edit</a>
                                         {{-- <br> --}}
                                         <a href="#" class="m-2 btn btn-outline-danger btn-sm" onclick="hapus({{$inv->id}})" data-toggle="modal" data-target="#hapusModal">Hapus</a>
                                     </td>
@@ -167,6 +171,17 @@
                                 <select class="form-control" id="jenisBarang" name="jenisBarang">
                                     <option value="">-- Pilih Jenis Barang --</option>
                                     @foreach($jenis_inventory as $data)
+                                    <option value="{{$data->id}}">{{$data->deskripsi}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="status_barang" class="col-sm-2 col-form-label">Status Barang</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="status_barang" name="status_barang">
+                                    <option value="">-- Pilih Status Barang --</option>
+                                    @foreach($status_barang as $data)
                                     <option value="{{$data->id}}">{{$data->deskripsi}}</option>
                                     @endforeach
                                 </select>

@@ -88,7 +88,9 @@
                                 <th>No</th>
                                 <th>Nama Barang</th>
                                 <th>Jenis Inventory</th>
-                                <th>Jumlah Barang</th>
+                                <th>Jumlah Barang Masuk</th>
+                                <th>Jumlah Barang Keluar</th>
+                                <th>Sisa Barang</th>
                                 <th>Harga Barang</th>
                                 <th>Tanggal Keluar</th>
                             </tr>
@@ -99,10 +101,10 @@
                                 $total_jml=0;
                                 $total_harga_barang=0;
                                 if(Auth::user()->role_id != 1){
-                                    $col = 2;
+                                    $col = 4;
                                 }
                                 else {
-                                    $col = 2;
+                                    $col = 4;
                                 }
                             @endphp
                             @foreach($inventory as $inv)
@@ -114,7 +116,9 @@
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $inv->nama_barang }}</td>
                                     <td>{{ $inv->deskripsi_jenis_inventory }}</td>
+                                    <td>{{ $inv->jumlah_barang_masuk }}</td>
                                     <td>{{ $inv->jumlah_barang_keluar }}</td>
+                                    <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td>
                                     <td>{{ $inv->harga_barang }}</td>
                                     <td>{{ $inv->tanggal_barang_keluar }}</td>
                                 </tr>
@@ -156,6 +160,17 @@
                                     <option value="">-- Pilih Nama Barang --</option>
                                     @foreach($daftar_barang as $data)
                                     <option value="{{$data->id}}">{{$data->nama_barang}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="status_barang" class="col-sm-2 col-form-label">Status Barang</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="status_barang" name="status_barang">
+                                    <option value="">-- Pilih Status Barang --</option>
+                                    @foreach($status_barang as $data)
+                                    <option value="{{$data->id}}">{{$data->deskripsi}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -280,7 +295,7 @@
         }
         function validate_input(){
             var nama_barang = $("#nama_barang").val();
-            var jumlah_barang = $("#jumlah__barang_keluar").val();
+            var jumlah_barang = $("#jumlah_barang_keluar").val();
             var ket_barang = $("#ket_barang").val();
 
             if(nama_barang == ''){
@@ -294,7 +309,40 @@
                     text: 'Jumlah Barang Tidak Boleh Kosong!',
                 })
             }else{
-                $('#tombol_input').click();
+                var msk = 0;
+                var kl = 0;
+                var ss = 0;
+                var cek = 0;
+                var token = '{{ csrf_token() }}';
+                var my_url = "{{url('/cek_qty')}}";
+                var formData = {
+                    '_token': token, 
+                    'nama_barang': nama_barang
+                };
+                $.ajax({
+                    method: 'POST',
+                    url: my_url,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(resp){
+                        $.each(resp, function(i,n){
+                            msk = n['jumlah_barang_masuk'];
+                            kl = n['jumlah_barang_keluar'];
+                            ss = msk - kl;
+                            cek = ss - jumlah_barang;
+                        });
+                        console.log(resp, msk, kl, ss, cek);
+                        if(cek < 0){
+                            alert('Mohon Jumlah Barang Melebihi Stok Yang Tersedia, Silahkan Rubah Jumlah Sesuai Stok Yang Tersedia!');
+                        }
+                        else{
+                            $('#tombol_input').click();
+                        }
+                    },
+                    error: function (resp){
+                        console.log(resp);
+                    }
+                });
             }
         }
 
