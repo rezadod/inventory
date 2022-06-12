@@ -29,6 +29,9 @@ class HomeController extends Controller
         $role_id = Auth::user()->role_id;
         $jenis_inventory = DB::table('jenis_inventory')
                         ->get();
+        $status_barang = DB::table('status_barang')
+                        ->where('id', '!=', 0)
+                        ->get();
 
         $inventory = DB::table('inventory')
                         ->leftjoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
@@ -39,12 +42,10 @@ class HomeController extends Controller
                             'jenis_inventory.id as id_jenis_inventory',
                             'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
                         );
-                    if($role_id == 1){
                         $inventory = $inventory->where('status_barang', 0);
-                    }
                         $inventory = $inventory->get();
                         
-        return view('home', compact('jenis_inventory', 'inventory'));
+        return view('home', compact('jenis_inventory', 'inventory', 'status_barang'));
     }
 
     public function tampi_barang(Request $request)
@@ -158,15 +159,19 @@ class HomeController extends Controller
     public function hapus_inventory(Request $request)
     {
         // dd($request);
+        $date_now = Carbon::now('Asia/Jakarta');
         $user_id = Auth::user()->id;
         $id = $request->id;
         $keterangan = $request->keterangan;
-
+        $status_barang = $request->status_barang;
+        $jml = DB::table('inventory')->select('jumlah_barang_masuk as jml')->where('id', $id)->first();
         DB::table('inventory')
         ->where('id', $id)
         ->update([
+            'tanggal_barang_keluar' => $date_now,
+            'jumlah_barang_keluar' => $jml->jml,
             'keterangan_barang' => $keterangan,
-            'status_hapus' => '1'
+            'status_barang' => $status_barang
         ]);
 
         return redirect()->back()->with('hapus', 'Data Berhasil Dihapus!!');
@@ -201,8 +206,11 @@ class HomeController extends Controller
 
         $jenis_inventory = DB::table('jenis_inventory')
         ->get();
+        $status_barang = DB::table('status_barang')
+        ->where('id', '!=', 0)
+        ->get();
 
-        return view('widget.modal_hapus', compact('inventory', 'jenis_inventory'));
+        return view('widget.modal_hapus', compact('inventory', 'jenis_inventory', 'status_barang'));
     }
     
     public function detail_inventory(Request $request)
@@ -238,6 +246,19 @@ class HomeController extends Controller
         return response()->json($data_cek, 200);
     }
 
+    public function cek_qty(Request $request)
+    {
+        $nama_barang = $request->nama_barang;
+
+        $data_cek = DB::table('inventory')
+                    ->select('*')
+                    ->where('id', $nama_barang)
+                    ->get();
+
+        // dd($data_cek);
+        return response()->json($data_cek, 200);
+    }
+
     // BARANG KELUAR
     public function report_barang_keluar()
     {
@@ -248,9 +269,17 @@ class HomeController extends Controller
         $status_barang = DB::table('status_barang')
                         ->where('id', '!=', 0)
                         ->get();
+
         $daftar_barang = DB::table('inventory')
-                        // ->where('status_barang', '!=', 0)
+                        ->select(
+                            'id',
+                            'nama_barang',
+                            DB::raw('(inventory.jumlah_barang_masuk) - (inventory.jumlah_barang_keluar) as jml_sisa')
+                        )
+                        ->where('status_barang', '>=', 0)
+                        ->having('jml_sisa', '>', 0)
                         ->get();
+
         $inventory = DB::table('inventory')
                         ->leftjoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
                         ->leftjoin('status_barang', 'inventory.status_barang', 'status_barang.id')
@@ -261,6 +290,7 @@ class HomeController extends Controller
                             'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
                         );
                         $inventory = $inventory->where('inventory.jumlah_barang_keluar', '!=', 0);
+                        $inventory = $inventory->Orwhere('inventory.status_barang', '!=', 0);
                         $inventory = $inventory->get();
                         
         return view('report_barang_keluar', compact('jenis_inventory', 'inventory', 'status_barang', 'daftar_barang'));
