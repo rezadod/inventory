@@ -79,8 +79,8 @@
                                 <th>Nama Barang</th>
                                 <th>Jenis Inventory</th>
                                 <th>Jumlah Barang Masuk</th>
-                                <th>Jumlah Barang Keluar</th>
-                                <th>Sisa Barang</th>
+                                {{-- <th>Jumlah Barang Keluar</th>
+                                <th>Sisa Barang</th> --}}
                                 <th>Harga Barang</th>
                                 <th>Tanggal Input</th>
                                 @if(Auth::user()->role_id != '1')
@@ -95,10 +95,10 @@
                                 $total_jml=0;
                                 $total_harga_barang=0;
                                 if(Auth::user()->role_id != 1){
-                                    $col = 6;
+                                    $col = 4;
                                 }
                                 else {
-                                    $col = 5;
+                                    $col = 3;
                                 }
                             @endphp
                             @foreach($inventory as $inv)
@@ -111,12 +111,12 @@
                                     <td>{{ $inv->nama_barang }}</td>
                                     <td>{{ $inv->deskripsi_jenis_inventory }}</td>
                                     <td>{{ $inv->jumlah_barang_masuk }}</td>
-                                    <td>{{ $inv->jumlah_barang_keluar }}</td>
-                                    <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td>
+                                    {{-- <td>{{ $inv->jumlah_barang_keluar }}</td>
+                                    <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td> --}}
                                     <td>{{ $inv->harga_barang }}</td>
                                     <td>{{ $inv->tanggal_barang_ditambahkan }}</td>
                                     @if(Auth::user()->role_id != '1')
-                                    <td><label class="badge <?php if($inv->status_hapus == 0){ echo 'badge-success'; }else{ echo 'badge-danger';} ?>">{{ $inv->is_hapus }}</label></td>
+                                    <td><label class="badge <?php if($inv->status_barang == 0){ echo 'badge-success'; }else{ echo 'badge-danger';} ?>">{{ $inv->is_hapus }}</label></td>
                                     @endif
                                     <td class="text-center">
                                         <a href="#" class="m-2 btn btn-outline-primary btn-sm" onclick="detail({{$inv->id}})" data-toggle="modal" data-target="#detailModal">Detail</a>
@@ -171,17 +171,6 @@
                                 <select class="form-control" id="jenisBarang" name="jenisBarang">
                                     <option value="">-- Pilih Jenis Barang --</option>
                                     @foreach($jenis_inventory as $data)
-                                    <option value="{{$data->id}}">{{$data->deskripsi}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="status_barang" class="col-sm-2 col-form-label">Status Barang</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" id="status_barang" name="status_barang">
-                                    <option value="">-- Pilih Status Barang --</option>
-                                    @foreach($status_barang as $data)
                                     <option value="{{$data->id}}">{{$data->deskripsi}}</option>
                                     @endforeach
                                 </select>
@@ -244,7 +233,7 @@
         </div>
     </div>
 
-    <!-- Modal Edit -->
+    <!-- Modal Hapus -->
     <div class="modal fade" id="hapusModal" tabindex="-1" role="dialog" aria-labelledby="hapusModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">

@@ -296,6 +296,49 @@ class HomeController extends Controller
         return view('report_barang_keluar', compact('jenis_inventory', 'inventory', 'status_barang', 'daftar_barang'));
     }
 
+    public function report_barang_keluar_tampil(Request $request)
+    {
+        $tanggal_1 = $request->tanggal_1;
+        $tanggal_2 = $request->tanggal_2;
+        $role_id = Auth::user()->role_id;
+        $jenis_inventory = $request->jenis_inventory;
+        $status_barang = $request->status_barang;
+
+        $daftar_barang = DB::table('inventory')
+                        ->select(
+                            'id',
+                            'nama_barang',
+                            DB::raw('(inventory.jumlah_barang_masuk) - (inventory.jumlah_barang_keluar) as jml_sisa')
+                        )
+                        ->where('status_barang', '>=', 0)
+                        ->having('jml_sisa', '>', 0)
+                        ->get();
+
+        $inventory = DB::table('inventory')
+                        ->leftjoin('jenis_inventory', 'inventory.jenis_inventory', 'jenis_inventory.id')
+                        ->leftjoin('status_barang', 'inventory.status_barang', 'status_barang.id')
+                        ->select(
+                            'inventory.*',
+                            'status_barang.deskripsi as is_hapus',
+                            'jenis_inventory.id as id_jenis_inventory',
+                            'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
+                        );
+                        if(!empty($jenis_inventory)){
+                            $inventory = $inventory->where('inventory.jenis_inventory', $jenis_inventory);
+                        }
+                        if(!empty($status_barang)){
+                            $inventory = $inventory->where('inventory.status_barang', $status_barang);
+                        }
+                        if(!empty($tanggal_1)){
+                            $inventory = $inventory->whereDate('inventory.tanggal_barang_ditambahkan', '>=', $tanggal_1);
+                            $inventory = $inventory->whereDate('inventory.tanggal_barang_ditambahkan', '<=', $tanggal_2);
+                        }
+                        $inventory = $inventory->where('inventory.jumlah_barang_keluar', '!=', 0);
+                        $inventory = $inventory->get();
+                        
+        return view('report_barang_keluar_tampil', compact('inventory'));
+    }
+
     public function save_input_barang_keluar(Request $request)
     {
         $date_now = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');

@@ -32,4 +32,5 @@ Route::post('/cek_produk', [App\Http\Controllers\HomeController::class, 'cek_pro
 Route::post('/cek_qty', [App\Http\Controllers\HomeController::class, 'cek_qty'])->name('cek_qty');
 
 Route::get('/report_barang_keluar', [HomeController::class, 'report_barang_keluar']);
+Route::post('/report_barang_keluar_tampil', [HomeController::class, 'report_barang_keluar_tampil']);
 Route::post('/save_input_barang_keluar', [HomeController::class, 'save_input_barang_keluar']);
