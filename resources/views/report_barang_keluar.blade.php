@@ -3,7 +3,7 @@
 @section('content')
     <h3 class="page-heading mb-4">Report Barang Keluar</h3>
     @if(Auth::user()->role_id == '1')
-    <div class="row">
+    <div class="row" hidden>
         <a href="#" class="btn btn-danger btn-sm p-2 mb-4 ml-3 text-white" data-toggle="modal"
             data-target="#inputModal">Barang Keluar</a>
     </div>
@@ -273,7 +273,7 @@
             var status_barang = $('#status_barang').val();
             var jenis_inventory = $('#jenis_inventory').val();
             var token = '{{ csrf_token() }}';
-            var my_url = "{{url('/report_barang_keluar')}}";
+            var my_url = "{{url('/report_barang_keluar_tampil')}}";
             var formData = {
                 '_token': token,
                 'tanggal_1': tanggal_1,

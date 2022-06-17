@@ -48,7 +48,7 @@
                     <div class="dropdown-menu dropdown-menu-right" style="z-index: 999;">
                         <!-- <div class="dropdown-divider"></div> -->
                         <a class="dropdown-item has-icon text-danger" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                                    document.getElementById('logout-form').submit();">
                             <i class="fas fa-sign-out-alt"></i> {{ __('Logout') }}
                         </a>
 
@@ -64,19 +64,30 @@
         <div class="container-fluid">
             <div class="row row-offcanvas row-offcanvas-right">
                 <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
+                    @php
+                        if(Request::is('home')){
+                            $act_1 = 'active';
+                            $act_2 = '';
+                        } else if (Request::is('report_barang_keluar')){
+                            $act_1 = '';
+                            $act_2 = 'active';
+                        }
+                    @endphp
                     <ul class="nav">
-                        <li class="nav-item active">
+                        <li class="nav-item {{ $act_1 }}">
                             <a class="nav-link" href="{{ url('/home') }}">
                                 <img src="images/icons/1.png" alt="">
                                 <span class="menu-title">Kelola Inventory</span>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        @if(Auth::user()->role_id == 2)
+                        <li class="nav-item {{ $act_2 }}">
                             <a class="nav-link" href="{{ url('/report_barang_keluar') }}">
                                 <img src="images/icons/1.png" alt="">
                                 <span class="menu-title">Report Barang keluar</span>
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </nav>
 
