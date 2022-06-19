@@ -144,7 +144,7 @@ class HomeController extends Controller
         ->where('id', $request->id)
         ->update([
             'nama_barang'=>$request->namaBarang,
-            'jumlah_barang'=>$request->jumlahBarang,
+            'jumlah_barang_diedit'=>$request->jumlahBarang,
             'foto_barang'=>$namaFotoBarangBaru,
             'bukti_transaksi'=>$namaBuktiTfBaru,
             'harga_barang'=>$request->hargaBarang,
