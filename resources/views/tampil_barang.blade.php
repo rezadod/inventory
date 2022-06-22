@@ -1,3 +1,4 @@
+
 <table id="datatable" class="table center-aligned-table">
     <thead>
         <tr class="text-primary">
@@ -11,7 +12,7 @@
             <th>Harga Barang</th>
             <th>Tanggal Input</th>
             @if(Auth::user()->role_id != '1')
-            <th>Status Barang</th>
+            {{-- <th>Status Barang</th> --}}
             @endif
             <th class="text-center">Aksi</th>
         </tr>
@@ -22,7 +23,7 @@
             $total_jml=0;
             $total_harga_barang=0;
             if(Auth::user()->role_id != 1){
-                $col = 5;
+                $col = 4;
             }
             else {
                 $col = 4;
@@ -30,8 +31,9 @@
         @endphp
         @foreach($inventory as $inv)
         @php
-            $total_jml += $inv->jumlah_barang_masuk - $inv->jumlah_barang_keluar;
-            $total_harga_barang += (($inv->jumlah_barang_masuk - $inv->jumlah_barang_keluar) * $inv->harga_barang);
+            // $total_jml += $inv->jumlah_barang_masuk - $inv->jumlah_barang_keluar;
+            $total_jml += $inv->jumlah_barang_diedit;
+            $total_harga_barang += (($inv->jumlah_barang_diedit) * $inv->harga_barang);
         @endphp
             <tr class="">
                 <td>{{ $no++ }}</td>
@@ -42,9 +44,9 @@
                 {{-- <td>{{ $inv->jumlah_barang_keluar }}</td>
                 <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td> --}}
                 <td>{{ $inv->harga_barang }}</td>
-                <td>{{ $inv->tanggal_barang_ditambahkan }}</td>
+                <td>{{ \Carbon\Carbon::parse($inv->tanggal_barang_ditambahkan)->format('d-m-Y')}}</td>
                 @if(Auth::user()->role_id != '1')
-                <td><label class="badge <?php if($inv->status_barang == 0){ echo 'badge-success'; }else{ echo 'badge-danger';} ?>">{{ $inv->is_hapus }}</label></td>
+                {{-- <td><label class="badge <?php if($inv->status_barang == 0){ echo 'badge-success'; }else{ echo 'badge-danger';} ?>">{{ $inv->is_hapus }}</label></td> --}}
                 @endif
                 <td class="text-center">
                     <a href="#" class="m-2 btn btn-outline-primary btn-sm" onclick="detail({{$inv->id}})" data-toggle="modal" data-target="#detailModal">Detail</a>

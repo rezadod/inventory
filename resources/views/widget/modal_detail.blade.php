@@ -29,6 +29,11 @@
 </div>
    <hr>
 <div class="row">
+   <div class="col-4">Tanggal Diedit</div>
+   <div class="col-6">{{ \Carbon\Carbon::parse($inventory->tanggal_barang_diedit)->format('d-m-Y')}}</div>
+</div>
+   <hr>
+<div class="row">
    <div class="col-4">Foto Barang</div>
    <div class="col-6">
       <img src="{{ asset('foto_barang/')}}/{{$inventory->foto_barang}}" class="img-fluid" alt="">
