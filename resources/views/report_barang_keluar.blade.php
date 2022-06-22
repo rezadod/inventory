@@ -93,6 +93,7 @@
                                 <th>Sisa Barang</th>
                                 <th>Harga Barang</th>
                                 <th>Tanggal Keluar</th>
+                                <th>Status Barang</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -101,10 +102,10 @@
                                 $total_jml=0;
                                 $total_harga_barang=0;
                                 if(Auth::user()->role_id != 1){
-                                    $col = 4;
+                                    $col = 5;
                                 }
                                 else {
-                                    $col = 4;
+                                    $col = 5;
                                 }
                             @endphp
                             @foreach($inventory as $inv)
@@ -120,7 +121,8 @@
                                     <td>{{ $inv->jumlah_barang_keluar }}</td>
                                     <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td>
                                     <td>{{ $inv->harga_barang }}</td>
-                                    <td>{{ $inv->tanggal_barang_keluar }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($inv->tanggal_barang_keluar)->format('d-m-Y')}}</td>
+                                    <td><label class="badge <?php if($inv->status_barang == 1){ echo 'badge-danger'; }else if($inv->status_barang == 2){ echo 'badge-warning'; }else{ echo 'badge-info';} ?>">{{ $inv->is_hapus }}</label></td>
                                 </tr>
                             @endforeach
                         </tbody>

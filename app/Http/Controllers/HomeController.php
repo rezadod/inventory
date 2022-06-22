@@ -65,9 +65,7 @@ class HomeController extends Controller
                             'jenis_inventory.id as id_jenis_inventory',
                             'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
                         );
-                        if($role_id == 1){
-                            $inventory = $inventory->where('status_barang', 0);
-                        }
+                        $inventory = $inventory->where('status_barang', 0);
                         if(!empty($jenis_inventory)){
                             $inventory = $inventory->where('inventory.jenis_inventory', $jenis_inventory);
                         }

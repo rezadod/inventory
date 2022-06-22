@@ -77,14 +77,18 @@
                         <li class="nav-item {{ $act_1 }}">
                             <a class="nav-link" href="{{ url('/home') }}">
                                 <img src="images/icons/1.png" alt="">
+                                @if(Auth::user()->role_id == 1)
                                 <span class="menu-title">Kelola Inventory</span>
+                                @else
+                                <span class="menu-title">Report Barang Masuk</span>
+                                @endif
                             </a>
                         </li>
                         @if(Auth::user()->role_id == 2)
                         <li class="nav-item {{ $act_2 }}">
                             <a class="nav-link" href="{{ url('/report_barang_keluar') }}">
                                 <img src="images/icons/1.png" alt="">
-                                <span class="menu-title">Report Barang keluar</span>
+                                <span class="menu-title">Report Barang Keluar</span>
                             </a>
                         </li>
                         @endif
