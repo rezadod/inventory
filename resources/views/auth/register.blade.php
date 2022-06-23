@@ -21,7 +21,8 @@
                 <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
                     <div class="card col-lg-4 mx-auto">
                         <div class="card-body px-5 py-5">
-                            <h3 class="card-title text-left mb-3">Register</h3>
+                            <h2 class="text-center mb-4">Inventaris Desa Ngargoharjo</h2>
+                            <h5 class="card-title text-left mb-3">Register</h5>
                             <form method="POST" action="{{ route('register') }}">
                                 @csrf
                                 <div class="form-group">

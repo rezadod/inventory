@@ -78,7 +78,7 @@
                                 <th>No</th>
                                 <th>Nama Barang</th>
                                 <th>Jenis Inventory</th>
-                                <th>Jumlah Barang Masuk</th>
+                                <th>Jumlah Awal Barang Masuk</th>
                                 <th>Jumlah Barang Diedit</th>
                                 {{-- <th>Jumlah Barang Keluar</th>
                                 <th>Sisa Barang</th> --}}
