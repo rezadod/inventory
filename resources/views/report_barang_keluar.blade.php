@@ -120,7 +120,7 @@
                                     <td>{{ $inv->jumlah_barang_masuk }}</td>
                                     <td>{{ $inv->jumlah_barang_keluar }}</td>
                                     <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td>
-                                    <td>{{ $inv->harga_barang }}</td>
+                                    <td>{{ number_format($inv->harga_barang,0, ',','.') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($inv->tanggal_barang_keluar)->format('d-m-Y')}}</td>
                                     <td><label class="badge <?php if($inv->status_barang == 1){ echo 'badge-danger'; }else if($inv->status_barang == 2){ echo 'badge-warning'; }else{ echo 'badge-info';} ?>">{{ $inv->is_hapus }}</label></td>
                                 </tr>
