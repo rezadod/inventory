@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+@if(Auth::user()->role_id == '2')
 <h3 class="page-heading mb-4">Report Barang Masuk</h3>
+@else
+<h3 class="page-heading mb-4">Kelola Inventaris</h3>
+@endif
 @if(Auth::user()->role_id == '1')
 <div class="row">
     <a href="#" class="btn btn-success btn-sm p-2 mb-4 ml-3 text-white" data-toggle="modal"
@@ -27,11 +31,14 @@
 </div>
 <div class="card-deck">
     <div class="card col-lg-12 px-0 mb-4">
+        @if(Auth::user()->role_id == '1')
         <div class="text-center alert alert-warning fw-bold">
             <b>Jika nama barang sama tetapi harga berbeda harap input data baru!</b>
         </div>
+        @else
+        <p></p>
+        @endif
         <div class="card-body">
-
             <div class="row">
                 <div class="col-3">
                     <div>
@@ -82,7 +89,7 @@
                             <th>Jumlah Awal Barang Masuk</th>
                             <th>Jumlah Barang Diedit</th>
                             {{-- <th>Jumlah Barang Keluar</th>
-                                <th>Sisa Barang</th> --}}
+                    <th>Sisa Barang</th> --}}
                             <th>Harga Barang</th>
                             <th>Tanggal Input</th>
                             @if(Auth::user()->role_id != '1')
@@ -108,13 +115,14 @@
                         // $total_jml += $inv->jumlah_barang_masuk - $inv->jumlah_barang_keluar;
                         if ($inv->jumlah_barang_diedit==0){
                         $total_jml += ($inv->jumlah_barang_diedit+$inv->jumlah_barang_masuk);
-                        $total_harga_barang += (($inv->jumlah_barang_diedit+$inv->jumlah_barang_masuk) * $inv->harga_barang);
+                        $total_harga_barang += (($inv->jumlah_barang_diedit+$inv->jumlah_barang_masuk) *
+                        $inv->harga_barang);
                         }else{
 
                         $total_jml += $inv->jumlah_barang_diedit;
                         $total_harga_barang += (($inv->jumlah_barang_diedit) * $inv->harga_barang);
                         }
-    
+
                         @endphp
                         <tr class="">
                             <td>{{ $no++ }}</td>
