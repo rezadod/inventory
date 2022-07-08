@@ -18,7 +18,7 @@
          <label for="jumlahBarang" class="col-sm-2 col-form-label">Jumlah Barang</label>
          <div class="col-sm-10">
             <input value="{{$inventory->jumlah_barang_diedit}}" type="number" class="form-control" id="edit_jumlahBarang" name="jumlahBarang"
-               placeholder="Masukkan Jumlah Barang" >
+               placeholder="Masukkan Jumlah Barang Yang Tersedia" >
          </div>
    </div>
    <div class="form-group row">

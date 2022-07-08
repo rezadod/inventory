@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="keterangan" class="col-sm-2 col-form-label">Keterangan Dihapus</label>
+        <label for="keterangan" class="col-sm-2 col-form-label">Keterangan Detail Barang</label>
         <div class="col-sm-10">
             <textarea class="form-control" name="keterangan" id="keterangan" rows="3"
                 placeholder="Masukkan Keterangan">{{$inventory->keterangan_barang}}</textarea>
