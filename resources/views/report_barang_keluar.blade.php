@@ -81,19 +81,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive" id="tampil_search">
+                <div class="table-responsive table-hover" id="tampil_search">
                     <table id="datatable" class="table center-aligned-table">
                         <thead>
                             <tr class="text-primary">
                                 <th>No</th>
+                                <th>Foto Barang</th>
+                                <th>Bukti Transaksi</th>
                                 <th>Nama Barang</th>
                                 <th>Jenis Inventory</th>
-                                <th>Jumlah Barang Masuk</th>
+                                <!-- <th>Jumlah Barang Masuk</th> -->
                                 <th>Jumlah Barang Keluar</th>
-                                <th>Sisa Barang</th>
+                                <!-- <th>Sisa Barang</th> -->
                                 <th>Harga Barang</th>
                                 <th>Tanggal Keluar</th>
                                 <th>Status Barang</th>
+                                <th>Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,19 +118,26 @@
                             @endphp
                                 <tr class="">
                                     <td>{{ $no++ }}</td>
+                                    <td> <img class="mb-2 rounded-3" id="barang" style="width: 100px;height: 100px" id="blah"
+                                    src="foto_barang/{{$inv->foto_barang}}"></td>
+                                    <td> <img class="mb-2 rounded-3" id="barang" style="width: 100px;height: 100px" id="blah"
+                                    src="bukti_tf/{{$inv->bukti_transaksi}}"></td>
+
                                     <td>{{ $inv->nama_barang }}</td>
                                     <td>{{ $inv->deskripsi_jenis_inventory }}</td>
-                                    <td>{{ $inv->jumlah_barang_masuk }}</td>
+                                    <!-- <td>{{ $inv->jumlah_barang_masuk }}</td> -->
                                     <td>{{ $inv->jumlah_barang_keluar }}</td>
-                                    <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td>
+                                    <!-- <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td> -->
                                     <td>{{ $inv->harga_barang }}</td>
                                     <td>{{ \Carbon\Carbon::parse($inv->tanggal_barang_keluar)->format('d-m-Y')}}</td>
                                     <td><label class="badge <?php if($inv->status_barang == 1){ echo 'badge-danger'; }else if($inv->status_barang == 2){ echo 'badge-warning'; }else{ echo 'badge-info';} ?>">{{ $inv->is_hapus }}</label></td>
+                                    <td>{{ $inv->keterangan_barang }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
+                               <td></td>
                                 <td colspan="{{ $col }}"></td>
                                 <td class="bg-warning text-white">Jumlah Total Barang</td>
                                 <td class="bg-warning text-white">{{ number_format($total_jml) }}</td>
