@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-2">
                     <div>
-                        <span style="color: white">-</span>
+                        <span style="color:git  white">-</span>
                     </div>
                     <div>
                         <a class="btn btn-info btn-md text-white mt-2 btn-rounded" onclick="cari_data(2)"><i
