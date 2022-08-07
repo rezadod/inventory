@@ -21,6 +21,10 @@
                 <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
                     <div class="card col-lg-4 mx-auto">
                         <div class="card-body px-5 py-5">
+                            <div class="text-center m-3">
+                                <img src="{{ asset('logo.png') }}" width="100" alt="">
+
+                            </div>  
                             <h2 class="text-center mb-4">Inventaris Desa Ngargoharjo</h2>
                             <h5 class="card-title text-left mb-3">Register</h5>
                             <form method="POST" action="{{ route('register') }}">

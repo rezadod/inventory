@@ -20,6 +20,10 @@
                 <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
                     <div class="card col-lg-4 mx-auto">
                         <div class="card-body">
+                            <div class="text-center m-3">
+                                <img src="{{ asset('logo.png') }}" width="100" alt="">
+
+                            </div>
                             <h2 class="text-center mb-4">Inventaris Desa Ngargoharjo</h2>
                             <h4 class="card-title text-left mb-3">Login</h4>
                             <form method="POST" action="{{ route('login') }}">
@@ -46,10 +50,10 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                     @enderror
-                                <br>
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-primary btn-block enter-btn">LOGIN</button>
-                                </div>
+                                    <br>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary btn-block enter-btn">LOGIN</button>
+                                    </div>
                             </form>
                         </div>
                     </div>
