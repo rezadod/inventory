@@ -38,6 +38,7 @@ class HomeController extends Controller
                         ->leftjoin('status_barang', 'inventory.status_barang', 'status_barang.id')
                         ->select(
                             'inventory.*',
+                            DB::raw('(case when inventory.jumlah_barang_diedit = 0 then inventory.jumlah_barang_masuk else inventory.jumlah_barang_diedit end) as barang_diedit'),
                             'status_barang.deskripsi as is_hapus',
                             'jenis_inventory.id as id_jenis_inventory',
                             'jenis_inventory.deskripsi as deskripsi_jenis_inventory'
@@ -61,6 +62,7 @@ class HomeController extends Controller
                         ->leftjoin('status_barang', 'inventory.status_barang', 'status_barang.id')
                         ->select(
                             'inventory.*',
+                            DB::raw('(case when inventory.jumlah_barang_diedit = 0 then inventory.jumlah_barang_masuk else inventory.jumlah_barang_diedit end) as barang_diedit'),
                             'status_barang.deskripsi as is_hapus',
                             'jenis_inventory.id as id_jenis_inventory',
                             'jenis_inventory.deskripsi as deskripsi_jenis_inventory'

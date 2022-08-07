@@ -32,15 +32,15 @@
         @foreach($inventory as $inv)
         @php
             // $total_jml += $inv->jumlah_barang_masuk - $inv->jumlah_barang_keluar;
-            $total_jml += $inv->jumlah_barang_diedit;
-            $total_harga_barang += (($inv->jumlah_barang_diedit) * $inv->harga_barang);
+            $total_jml += $inv->barang_diedit;
+            $total_harga_barang += (($inv->barang_diedit) * $inv->harga_barang);
         @endphp
             <tr class="">
                 <td>{{ $no++ }}</td>
                 <td>{{ $inv->nama_barang }}</td>
                 <td>{{ $inv->deskripsi_jenis_inventory }}</td>
                 <td>{{ $inv->jumlah_barang_masuk }}</td>
-                <td>{{ $inv->jumlah_barang_diedit }}</td>
+                <td>{{ $inv->barang_diedit }}</td>
                 {{-- <td>{{ $inv->jumlah_barang_keluar }}</td>
                 <td>{{ $inv->jumlah_barang_masuk-$inv->jumlah_barang_keluar }}</td> --}}
                 <td>{{ $inv->harga_barang }}</td>
